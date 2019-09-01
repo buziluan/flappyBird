@@ -43,7 +43,7 @@ export default class Game {
 			e.stopPropagation();
 			// e.preventDefault();
 		})
-		document.onclick = (e) => {
+		document.ontouchstart = (e) => {
 			this.start()
 			return false
 		}
@@ -127,7 +127,7 @@ export default class Game {
 	//游戏结束
 	async gameOver() {
 		this.isStart = false;
-		document.onclick = null;
+		document.ontouchstart = null;
 		cancelAnimationFrame(this.mapTimer)
 		this.mapTimer = null
 		//结束图片

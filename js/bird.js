@@ -42,23 +42,20 @@ export default class Bird {
 	}
 
 	move() {
-		var iSpeed = -15;
-		let x = 1.8
+		var iSpeed = -16;
+		let x = 1.7
 		if (this.readyTimer) {
 			clearInterval(this.readyTimer);
 			this.readyTimer = null
 		}
+		this.game.music.fly.play();
 		clearInterval(this.Movertimer);
 		if (this.isAlive) {
 			this.Movertimer = setInterval(() => {
 				iSpeed += x;
 				x *= 1.03;
 				let T = this.el.offsetTop + iSpeed;
-				if (T < 20 + 4) {
-					iSpeed *= 0.85;
-				}
 				Tween.css(this.el, "top", T)
-				this.game.music.fly.play()
 				if (Util.crash(this.el, this.game.ground)) {
 					this.die()
 					this.game.music.crash.play()
