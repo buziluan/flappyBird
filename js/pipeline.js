@@ -162,7 +162,6 @@ export default class Pipeline {
 
 				for (let i = 0; i < lis.length; i++) {
 					if (Util.crash(lis[i], _this.game.bird.el)) {
-						_this.game.music.crash.play()
 						_this.game.bird.die()
 					}
 				}

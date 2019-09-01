@@ -42,28 +42,37 @@ export default class Bird {
 	}
 
 	move() {
-		var iSpeed = -16;
-		let x = 1.7
+		let iSpeed = -6;
+		let x = 0.3
 		if (this.readyTimer) {
 			clearInterval(this.readyTimer);
 			this.readyTimer = null
 		}
-		this.game.music.fly.play();
-		clearInterval(this.Movertimer);
-		if (this.isAlive) {
-			this.Movertimer = setInterval(() => {
+		cancelAnimationFrame(this.Movertimer)
+		let move1 = () => {
+			this.Movertimer = requestAnimationFrame(() => {
 				iSpeed += x;
-				x *= 1.03;
+				x *= 1.01;
 				let T = this.el.offsetTop + iSpeed;
 				Tween.css(this.el, "top", T)
 				if (Util.crash(this.el, this.game.ground)) {
-					this.die()
-					this.game.music.crash.play()
-					let bgHeight = Tween.css(this.game.mapElement, "height");
-					let elHeight = Tween.css(this.el, "height")
-					Tween.css(this.el, "top", bgHeight - elHeight)
+					if (this.isAlive) {
+						cancelAnimationFrame(this.Movertimer)
+						this.die()
+						let bgHeight = Tween.css(this.game.mapElement, "height");
+						let elHeight = Tween.css(this.el, "height")
+						Tween.css(this.el, "top", bgHeight - elHeight)
+					}
+					this.isAlive = false
 				}
-			}, 45);
+				if (this.isAlive) {
+					move1()
+				}
+			})
+		}
+
+		if (this.isAlive) {
+			move1()
 		}
 	}
 

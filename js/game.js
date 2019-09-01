@@ -38,14 +38,9 @@ export default class Game {
 		this.createBird();
 		this.createPipeline();
 		this.gameMusic()
-		document.addEventListener("keydown", (e) => {
-			if (e.keyCode === 13) this.init()
-			e.stopPropagation();
-			// e.preventDefault();
-		})
 		document.ontouchstart = (e) => {
 			this.start()
-			return false
+
 		}
 	}
 	//地图初始化
@@ -116,6 +111,7 @@ export default class Game {
 		} else {
 			this.bird.move()
 		}
+		if (this.bird.isAlive) this.music.fly.play();
 
 	}
 
@@ -126,6 +122,7 @@ export default class Game {
 
 	//游戏结束
 	async gameOver() {
+		this.music.crash.play();
 		this.isStart = false;
 		document.ontouchstart = null;
 		cancelAnimationFrame(this.mapTimer)
