@@ -3,8 +3,8 @@ import Util from "./util.js";
 
 export default class Bird {
 
-	constructor(parent) {
-		this.parent = parent
+	constructor(game) {
+		this.game = game
 		this.el = null;
 		this.Movertimer = null;
 		this.readyTimer = null;
@@ -23,7 +23,7 @@ export default class Bird {
 		let bird = document.createElement("div");
 		this.el = bird;
 		bird.id = "brid";
-		this.parent.el.appendChild(bird)
+		this.game.el.appendChild(bird)
 		this.readyMove()
 	}
 
@@ -43,7 +43,7 @@ export default class Bird {
 
 	move() {
 		var iSpeed = -15;
-		let x = 2
+		let x = 1.8
 		if (this.readyTimer) {
 			clearInterval(this.readyTimer);
 			this.readyTimer = null
@@ -55,20 +55,27 @@ export default class Bird {
 				x *= 1.03;
 				let T = this.el.offsetTop + iSpeed;
 				if (T < 20 + 4) {
-					iSpeed *= 0.75;
+					iSpeed *= 0.85;
 				}
 				Tween.css(this.el, "top", T)
-				if (Util.crash(this.el, this.parent.ground)) {
-					clearInterval(this.Movertimer);
-					this.isAlive = false;
-					let bgHeight = Tween.css(this.parent.mapElement, "height");
+				this.game.music.fly.play()
+				if (Util.crash(this.el, this.game.ground)) {
+					this.die()
+					this.game.music.crash.play()
+					let bgHeight = Tween.css(this.game.mapElement, "height");
 					let elHeight = Tween.css(this.el, "height")
 					Tween.css(this.el, "top", bgHeight - elHeight)
-					this.el.style.background = "url(img/bird.png)"
-					this.parent.stop()
 				}
 			}, 45);
 		}
+	}
+
+	//死亡方法
+	die() {
+		clearInterval(this.Movertimer);
+		this.isAlive = false;
+		this.el.style.background = "url(img/bird.png)"
+		this.game.stop()
 	}
 
 }

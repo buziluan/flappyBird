@@ -53,8 +53,41 @@ const crash = (el1, el2) => {
 		return false;
 	}
 }
+
+
+/**
+ * 管道右边距
+ */
+const pipelineMarginRight = (game) => {
+	let widht = Tween.css(game.mapElement, "width") * 2;
+	return (widht - 69 * 3) / 3
+}
+
+/**
+ * 随机数（）
+ */
+const random = () => {
+	return Math.round((Math.random() * 4 + 3) * 10)
+}
+
+/**
+ * 通过一个管道进行加分
+ */
+const addScore = (el1, el2) => {
+	// 获取俩个元素的四条边位置
+	let el1Pos = el1.getBoundingClientRect();
+	let el2Pos = el2.getBoundingClientRect();
+	if (el1Pos.right < el2Pos.left) {
+		return true
+	}else{
+		return false
+	}
+}
 export default {
 	roadMove,
 	counter,
-	crash
+	crash,
+	pipelineMarginRight,
+	random,
+	addScore
 }

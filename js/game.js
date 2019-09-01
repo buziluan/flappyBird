@@ -1,6 +1,7 @@
 import Tween from "./Tween.js";
 import Util from "./util.js";
 import Bird from "./bird.js"
+import Pipeline from "./pipeline.js"
 export default class Game {
 	constructor(el) {
 		//游戏框元素
@@ -19,48 +20,44 @@ export default class Game {
 		this.score = 0;
 		//鸟对象
 		this.bird = null;
+		//管道对象（）
+		this.pipeline = null;
+		//游戏是否开始
+		this.isStart = false;
+		//声音
+		this.music = null;
 		//初始化
 		this.init();
 	}
 	//初始化方法
 	init() {
+		this.el.innerHTML = ""
 		this.score = 0
 		this.mapRender();
 		this.recordRender();
 		this.createBird();
-
+		this.createPipeline();
+		this.gameMusic()
 		document.addEventListener("keydown", (e) => {
 			if (e.keyCode === 13) this.init()
 			e.stopPropagation();
 			// e.preventDefault();
 		})
-		document.addEventListener("click", (e) => {
-			this.bird.move()
-			Tween.MTween({
-				el: this.readyImage,
-				attr: {
-					opacity: 0,
-					top: this.readyImage.offsetTop + 200
-				},
-				duration: 300
-			})
-			this.test1()
-			e.stopPropagation();
-			e.preventDefault();
-		})
-		
+		document.onclick = (e) => {
+			this.start()
+			return false
+		}
 	}
 	//地图初始化
 	mapRender() {
-		this.el.innerHTML = ""
 		//获取整体元素
 		let gameElement = this.el;
 		gameElement.classList.add("game")
 
-		//创建游戏内容块
-		let gameContent = document.createElement("div");
-		gameContent.id = "game-content";
-		this.mapElement = gameContent
+		//创建上部地图内容块
+		let mapElement = document.createElement("div");
+		mapElement.id = "game-content";
+		this.mapElement = mapElement
 		//创建地面元素（及运动块）
 		let bottomContent = document.createElement("div");
 		bottomContent.id = "bottom-content";
@@ -68,9 +65,7 @@ export default class Game {
 		let road = document.createElement("div");
 		road.id = "road";
 		bottomContent.appendChild(road)
-
-
-		gameElement.appendChild(gameContent)
+		gameElement.appendChild(mapElement)
 		gameElement.appendChild(bottomContent)
 		//移动
 		Util.roadMove(road, this)
@@ -91,18 +86,50 @@ export default class Game {
 
 	//创建鸟
 	createBird() {
-		this.bird = new Bird(this)
+		this.bird = new Bird(this);
+	}
+
+	//创建管道
+	createPipeline() {
+		this.pipeline = new Pipeline(this);
+		this.mapElement.innerHTML += this.pipeline.el;
+
+	}
+
+	//开始游戏方法
+	start() {
+		if (!this.isStart) {
+			this.isStart = true
+			this.bird.move()
+			Tween.MTween({
+				el: this.readyImage,
+				attr: {
+					opacity: 0,
+					top: this.readyImage.offsetTop + 200
+				},
+				duration: 300
+			})
+			this.readyImage.style.display = "none"
+			setTimeout(() => {
+				this.pipeline.pipelineMove()
+			}, 1700)
+		} else {
+			this.bird.move()
+		}
+
 	}
 
 	//结束方法(游戏结束，动画结束，显示分数)
 	stop() {
-		cancelAnimationFrame(this.mapTimer)
-		this.mapTimer = null
 		this.gameOver()
 	}
 
 	//游戏结束
 	async gameOver() {
+		this.isStart = false;
+		document.onclick = null;
+		cancelAnimationFrame(this.mapTimer)
+		this.mapTimer = null
 		//结束图片
 		let gameover = document.createElement("div");
 		gameover.id = "game-over";
@@ -117,10 +144,12 @@ export default class Game {
 		//本次分数
 		let score = document.createElement("span");
 		score.innerText = this.score;
+		localStorage.setItem("score", localStorage.getItem("score") == null ? this.score : Math.max(this.score, localStorage
+			.getItem("score")))
 		scoreBox.appendChild(score);
 		//最高历史分数
 		let historyScore = document.createElement("span");
-		historyScore.innerText = 100;
+		historyScore.innerText = Math.max(this.score, (window.localStorage.getItem("score") || 0));
 		scoreBox.appendChild(historyScore);
 		//重新开始
 		let start = document.createElement("div");
@@ -156,10 +185,27 @@ export default class Game {
 
 	}
 
+	//游戏声音
+	gameMusic() {
+		let fly = document.createElement("audio");
+		fly.id = "paly";
+		fly.src = "./audio/fly.ogg";
+
+		let crash = document.createElement("audio");
+		crash.id = "paly";
+		crash.src = "./audio/crash.ogg";
+
+		this.el.appendChild(fly);
+		this.el.appendChild(crash);
+
+		this.music = {
+			fly,
+			crash
+		};
+	}
+
 	//测试方法
 	test1() {
-		setInterval(() => {
-			Util.counter(this)
-		}, 1000)
+
 	}
 }
