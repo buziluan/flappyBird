@@ -67,7 +67,7 @@ const pipelineMarginRight = (game) => {
  * 随机数（）
  */
 const random = () => {
-	return Math.round((Math.random() * 4 + 3) * 10)
+	return Math.round((Math.random() * 4 + 2) * 10)
 }
 
 /**
