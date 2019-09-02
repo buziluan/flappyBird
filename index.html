@@ -9,9 +9,16 @@
 	</head>
 	<body>
 
-		<div id="map">
-			
-		</div>
+		<div id="map"></div>
+		<audio id="paly" style="display: none;" preload="auto">
+			<source src="audio/fly.ogg">
+		</audio>
+		<audio id="crash" style="display: none;" preload="auto">
+			<source src="audio/crash.ogg">
+		</audio>
+		<audio id="gold" style="display: none;" preload="auto">
+			<source src="audio/gold.ogg">
+		</audio>
 		<script type="module">
 			import game from "./js/game.js"
 			new game(document.querySelector("#map"))

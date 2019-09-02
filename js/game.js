@@ -40,7 +40,6 @@ export default class Game {
 		this.gameMusic()
 		document.ontouchstart = (e) => {
 			this.start()
-
 		}
 	}
 	//地图初始化
@@ -87,12 +86,10 @@ export default class Game {
 	//创建管道
 	createPipeline() {
 		this.pipeline = new Pipeline(this);
-		this.mapElement.innerHTML += this.pipeline.el;
-
 	}
 
 	//开始游戏方法
-	start() {
+	async start() {
 		if (!this.isStart) {
 			this.isStart = true
 			this.bird.move()
@@ -111,7 +108,6 @@ export default class Game {
 		} else {
 			this.bird.move()
 		}
-		if (this.bird.isAlive) this.music.fly.play();
 
 	}
 
@@ -184,20 +180,21 @@ export default class Game {
 
 	//游戏声音
 	gameMusic() {
-		let fly = document.createElement("audio");
-		fly.id = "paly";
-		fly.src = "./audio/fly.ogg";
+		// let fly = document.createElement("audio");
+		// fly.id = "paly";
+		// fly.src = "./audio/fly.ogg";
 
 		let crash = document.createElement("audio");
 		crash.id = "paly";
 		crash.src = "./audio/crash.ogg";
 
-		this.el.appendChild(fly);
-		this.el.appendChild(crash);
+		// this.el.appendChild(fly);
+		// this.el.appendChild(crash);
 
 		this.music = {
-			fly,
-			crash
+			fly: document.querySelector("#paly"),
+			crash: document.querySelector("#crash"),
+			gold: document.querySelector("#gold")
 		};
 	}
 

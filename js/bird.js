@@ -42,13 +42,14 @@ export default class Bird {
 	}
 
 	move() {
-		let iSpeed = -6;
-		let x = 0.3
+		let iSpeed = -7;
+		let x = 0.4
 		if (this.readyTimer) {
 			clearInterval(this.readyTimer);
 			this.readyTimer = null
 		}
 		cancelAnimationFrame(this.Movertimer)
+
 		let move1 = () => {
 			this.Movertimer = requestAnimationFrame(() => {
 				iSpeed += x;
@@ -70,8 +71,8 @@ export default class Bird {
 				}
 			})
 		}
-
 		if (this.isAlive) {
+			this.game.music.fly.play();
 			move1()
 		}
 	}
